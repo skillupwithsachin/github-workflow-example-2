@@ -1,0 +1,23 @@
+name: Go CI
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: true
+      - name: Test with coverage
+        run: go test -v -coverprofile=coverage.out ./...
+      - name: Build binary
+        run: go build -o app .
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            app
+            coverage.out
